@@ -60,12 +60,6 @@ public class FrontControllerServlet extends HttpServlet {
 				request.setAttribute("contato", contato);
 				proxPagina = "contato/cadastro.jsp";
 				break;
-				
-			case "exlctt":
-				contatoCtrl.deletar(request.getParameterMap());
-				proxPagina = "contato/consulta.jsp";
-				break;
-				
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);
@@ -108,6 +102,21 @@ public class FrontControllerServlet extends HttpServlet {
 					proxPagina = paginaErro;
 				}
 				break;
+				
+			case "exlctt":
+				resultado = contatoCtrl.deletar(request.getParameterMap());
+				paginaSucesso = "contato/consulta.jsp";
+				paginaErro = proxPagina;
+				if (!resultado.isErro()) {
+					proxPagina = paginaSucesso;
+					request.removeAttribute("selecionarContato");
+					request.setAttribute("msgs", resultado.getMensagensSucesso());
+				} else {
+					request.setAttribute("msgs", resultado.getMensagensErro());
+					proxPagina = paginaErro;
+				}
+				break;
+				
 			default:
 				request.setAttribute("erro", "Operação não especificada no servlet!");
 				proxPagina = "../erro/erro.jsp";

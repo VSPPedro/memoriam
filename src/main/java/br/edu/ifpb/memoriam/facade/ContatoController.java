@@ -25,27 +25,6 @@ public class ContatoController {
 		return contatos;
 	}
 	
-	public void deletar(Map<String, String[]> parametros){
-		String[] idsDosContatosSelecionados = parametros.get("selecionarContato");
-		System.out.println("Metodo deletar contato!");
-		
-		if (idsDosContatosSelecionados == null){
-			System.out.println("O array dos contatos selecionados nao apresenta conteudo!");
-		}
-		
-		System.out.println("Tamanho do array dos contatos selecionados: " + idsDosContatosSelecionados[0]);
-		
-		ContatoDAO dao = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());
-		dao.beginTransaction();
-		
-		for (String id : idsDosContatosSelecionados) {
-			Contato contato = buscar(id);
-			dao.delete(contato);
-		}
-		
-		dao.commit();
-	}
-
 	public Contato buscar(String id){
 		List<Contato> contatos = consultar();
 		
@@ -71,6 +50,32 @@ public class ContatoController {
 		
 		System.out.println("Contato não encontrado!");
 		return null;
+	}
+	
+	public Resultado deletar(Map<String, String[]> parametros){
+		
+		Resultado resultado = new Resultado();
+		String[] idsDosContatosSelecionados = parametros.get("selecionarContato");
+		
+		if (idsDosContatosSelecionados.length > 0) {
+			ContatoDAO dao = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());
+			dao.beginTransaction();
+			
+			for (String id : idsDosContatosSelecionados) {
+				Contato contato = buscar(id);
+				dao.delete(contato);
+			}
+			
+			dao.commit();
+			
+			resultado.setErro(false);
+			resultado.setMensagensErro(Collections.singletonList("Contato(s) deletado(s) com sucesso!"));
+		} else {
+			resultado.setErro(true);
+			resultado.setMensagensErro(Collections.singletonList("Nenhum contato foi selecionado!"));
+		}
+		
+		return resultado;
 	}
 
 	public Resultado cadastrar(Map<String, String[]> parametros) {
