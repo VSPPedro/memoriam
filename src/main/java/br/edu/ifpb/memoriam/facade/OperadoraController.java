@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import br.edu.ifpb.memoriam.dao.ContatoDAO;
 import br.edu.ifpb.memoriam.dao.OperadoraDAO;
 import br.edu.ifpb.memoriam.dao.PersistenceUtil;
 import br.edu.ifpb.memoriam.entity.Operadora;
@@ -66,7 +65,12 @@ public class OperadoraController {
 		// formulário
 		String[] id = parametros.get("id");
 		String[] nome = parametros.get("nome");
-
+		String[] prefixo = parametros.get("prefixo");
+		
+		System.out.println("Valor id: " + id[0]);
+		System.out.println("Valor nome: " + nome[0]);
+		System.out.println("Valor prefixo: " + prefixo[0]);
+		
 		this.operadora = new Operadora();
 		this.mensagensErro = new ArrayList<String>();
 
@@ -78,6 +82,12 @@ public class OperadoraController {
 			this.mensagensErro.add("Nome é campo obrigatório!");
 		} else {
 			operadora.setNome(nome[0]);
+		}
+		
+		if (prefixo == null || prefixo.length == 0 || prefixo[0].isEmpty()) {
+			this.mensagensErro.add("Prefixo é campo obrigatório!");
+		} else {
+			operadora.setPrefixo(Integer.parseInt(prefixo[0]));
 		}
 		
 		return this.mensagensErro.isEmpty();

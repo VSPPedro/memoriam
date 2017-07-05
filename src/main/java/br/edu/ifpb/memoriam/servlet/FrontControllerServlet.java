@@ -134,14 +134,15 @@ public class FrontControllerServlet extends HttpServlet {
 				break;
 			
 			case "cadopr":
+				System.out.println("Teste! WTF!");
 				resultado = operadoraCtrl.cadastrar(request.getParameterMap());
 				if (!resultado.isErro()) {
 					proxPagina = "controller.do?op=conopr";
 					request.setAttribute("msgs", resultado.getMensagensSucesso());
 				} else {
-					request.setAttribute("contato", (Contato) resultado.getEntidade());
+					request.setAttribute("operadora", (Operadora) resultado.getEntidade());
 					request.setAttribute("msgs", resultado.getMensagensErro());
-					proxPagina = paginaErro;
+					proxPagina = "operadora/cadastro.jsp";;
 				}
 				break;
 

@@ -39,7 +39,9 @@
 				<input type="hidden" name="op" value="cadopr">
 				<input type="hidden" name="id" value="${operadora.id}">  
 				<input id="nome" value="${operadora.nome}" name="nome" type="text"
-					class="form-control" placeholder="Nome" /> 
+					class="form-control" placeholder="Nome" />
+				<input id="prefixo" value="${operadora.prefixo}" name="prefixo" type="text"
+					class="form-control" placeholder="Prefixo" />  
 				
 				<input type="submit"
 					class="form-control btn btn-primary" value="Salvar">
