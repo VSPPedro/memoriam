@@ -5,27 +5,42 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import br.edu.ifpb.memoriam.dao.ContatoDAO;
 import br.edu.ifpb.memoriam.dao.OperadoraDAO;
 import br.edu.ifpb.memoriam.dao.PersistenceUtil;
+import br.edu.ifpb.memoriam.entity.Contato;
 import br.edu.ifpb.memoriam.entity.Operadora;
 
 public class OperadoraController {
-	
+
 	private Operadora operadora;
 	private List<String> mensagensErro;
-	
+
 	public List<Operadora> consultar() {
 		OperadoraDAO dao = new OperadoraDAO();
 		List<Operadora> operadoras = dao.findAll();
 		return operadoras;
 	}
-	
-	public Operadora buscar(Map<String, String[]> parametros){
+
+	public Operadora buscar(Map<String, String[]> parametros) {
 		List<Operadora> operadoras = consultar();
 		String[] id = parametros.get("id");
+
+		for (Operadora operadora : operadoras) {
+			if (operadora.getId().toString().equals(id[0])) {
+				return operadora;
+			}
+		}
+
+		System.out.println("Operadora não encontrada!");
+		return null;
+	}
+	
+	public Operadora buscar(String id){
+		List<Operadora> operadoras = consultar();
 		
 		for (Operadora operadora : operadoras) {
-			if (operadora.getId().toString().equals(id[0])){
+			if (operadora.getId().toString().equals(id)){
 				return operadora;
 			}
 		}
@@ -34,11 +49,40 @@ public class OperadoraController {
 		return null;
 	}
 	
+	public Resultado deletar(Map<String, String[]> parametros) {
+
+		Resultado resultado = new Resultado();
+		String[] idsDasOperadorasSelecionadas = parametros.get("selecionarOperadora");
+		
+		
+		//System.out.println("Value idsDosContatosSelecionados: " + idsDosContatosSelecionados);
+		
+		if (idsDasOperadorasSelecionadas.length > 0) {
+			OperadoraDAO dao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
+			dao.beginTransaction();
+
+			for (String id : idsDasOperadorasSelecionadas) {
+				Operadora contato = buscar(id);
+				dao.delete(contato);
+			}
+
+			dao.commit();
+
+			resultado.setErro(false);
+			resultado.setMensagensErro(Collections.singletonList("Contato(s) deletado(s) com sucesso!"));
+		} else {
+			resultado.setErro(true);
+			resultado.setMensagensErro(Collections.singletonList("Nenhum contato foi selecionado!"));
+		}
+
+		return resultado;
+	}
+
 	public Resultado cadastrar(Map<String, String[]> parametros) {
 		Resultado resultado = new Resultado();
-		
+
 		if (isParametrosValidos(parametros)) {
-			// Recupera a operadora selecionada, a partir do seu id	
+			// Recupera a operadora selecionada, a partir do seu id
 			OperadoraDAO dao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
 			dao.beginTransaction();
 
@@ -47,7 +91,7 @@ public class OperadoraController {
 			} else {
 				dao.update(this.operadora);
 			}
-			
+
 			dao.commit();
 			resultado.setErro(false);
 			resultado.setMensagensErro(Collections.singletonList("Operadora criado com sucesso!"));
@@ -59,18 +103,18 @@ public class OperadoraController {
 
 		return resultado;
 	}
-	
+
 	private boolean isParametrosValidos(Map<String, String[]> parametros) {
 		// nomes dos parâmetros vêm dos atributos 'name' das tags HTML do
 		// formulário
 		String[] id = parametros.get("id");
 		String[] nome = parametros.get("nome");
 		String[] prefixo = parametros.get("prefixo");
-		
+
 		System.out.println("Valor id: " + id[0]);
 		System.out.println("Valor nome: " + nome[0]);
 		System.out.println("Valor prefixo: " + prefixo[0]);
-		
+
 		this.operadora = new Operadora();
 		this.mensagensErro = new ArrayList<String>();
 
@@ -83,13 +127,13 @@ public class OperadoraController {
 		} else {
 			operadora.setNome(nome[0]);
 		}
-		
+
 		if (prefixo == null || prefixo.length == 0 || prefixo[0].isEmpty()) {
 			this.mensagensErro.add("Prefixo é campo obrigatório!");
 		} else {
 			operadora.setPrefixo(Integer.parseInt(prefixo[0]));
 		}
-		
+
 		return this.mensagensErro.isEmpty();
 	}
 }

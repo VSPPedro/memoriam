@@ -134,7 +134,6 @@ public class FrontControllerServlet extends HttpServlet {
 				break;
 			
 			case "cadopr":
-				System.out.println("Teste! WTF!");
 				resultado = operadoraCtrl.cadastrar(request.getParameterMap());
 				if (!resultado.isErro()) {
 					proxPagina = "controller.do?op=conopr";
@@ -143,6 +142,20 @@ public class FrontControllerServlet extends HttpServlet {
 					request.setAttribute("operadora", (Operadora) resultado.getEntidade());
 					request.setAttribute("msgs", resultado.getMensagensErro());
 					proxPagina = "operadora/cadastro.jsp";;
+				}
+				break;
+			
+			case "exlopr":
+				resultado = operadoraCtrl.deletar(request.getParameterMap());
+				paginaSucesso = "controller.do?op=conopr";
+				paginaErro = paginaSucesso;
+				if (!resultado.isErro()) {
+					proxPagina = paginaSucesso;
+					request.removeAttribute("selecionarOperadora");
+					request.setAttribute("msgs", resultado.getMensagensSucesso());
+				} else {
+					request.setAttribute("msgs", resultado.getMensagensErro());
+					proxPagina = paginaErro;
 				}
 				break;
 

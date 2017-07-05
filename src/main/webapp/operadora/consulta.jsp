@@ -36,7 +36,7 @@
 			
 			<form action="${pageContext.request.contextPath}/controller.do"
 				method="POST" class="form-horizontal">
-				<input type="hidden" name="op" value="exlopp">
+				<input type="hidden" name="op" value="exlopr">
 				<table>
 					<tr align="left">
 						<th></th>
