@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.edu.ifpb.memoriam.entity.Contato;
+import br.edu.ifpb.memoriam.entity.Operadora;
 import br.edu.ifpb.memoriam.facade.ContatoController;
+import br.edu.ifpb.memoriam.facade.OperadoraController;
 import br.edu.ifpb.memoriam.facade.Resultado;
 
 /**
@@ -37,6 +39,7 @@ public class FrontControllerServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		ContatoController contatoCtrl = new ContatoController();
+		OperadoraController operadoraCtrl = new OperadoraController();
 		String proxPagina = null;
 		this.getServletContext().removeAttribute("msgs");
 		String operacao = request.getParameter("op");
@@ -60,6 +63,20 @@ public class FrontControllerServlet extends HttpServlet {
 				request.setAttribute("contato", contato);
 				proxPagina = "contato/cadastro.jsp";
 				break;
+				
+			case "conopr":
+				List<Operadora> operadoras = operadoraCtrl.consultar();
+				request.setAttribute("operadoras", operadoras);
+				proxPagina = "operadora/consulta.jsp";
+				break;
+				
+			case "edtopr":
+				Operadora operadora = operadoraCtrl.buscar(request.getParameterMap());
+				request.setAttribute("operadora", operadora);
+				proxPagina = "operadora/cadastro.jsp";
+				break;
+				
+				//controller.do?op=edtopr&id=${contato.id}
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);
@@ -105,7 +122,7 @@ public class FrontControllerServlet extends HttpServlet {
 				
 			case "exlctt":
 				resultado = contatoCtrl.deletar(request.getParameterMap());
-				paginaSucesso = "contato/consulta.jsp";
+				paginaSucesso = "controller.do?op=conctt";
 				paginaErro = proxPagina;
 				if (!resultado.isErro()) {
 					proxPagina = paginaSucesso;

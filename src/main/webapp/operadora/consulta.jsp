@@ -36,28 +36,24 @@
 			
 			<form action="${pageContext.request.contextPath}/controller.do"
 				method="POST" class="form-horizontal">
-				<input type="hidden" name="op" value="exlctt">
+				<input type="hidden" name="op" value="exlopp">
 				<table>
 					<tr align="left">
 						<th></th>
-						<th style="width: 30%">Nome</th>
-						<th>Telefone</th>
-						<th>Operadora</th>
+						<th>Nome</th>
 					</tr>
-					<c:forEach var="contato" items="${contatos}">
+					<c:forEach var="operadora" items="${operadoras}">
 						<tr align="left">
-							<td><input name="selecionarContato" value="${contato.id}"
+							<td><input name="selecionarOperadora" value="${operadora.id}"
 								type="checkbox" onclick="showButton()" /></td>
-							<td><a href="controller.do?op=edtctt&id=${contato.id}">${contato.nome}</a></td>
-							<td>${contato.fone}</td>
-							<td>${contato.operadora.nome}</td>
+							<td><a href="controller.do?op=edtopp&id=${operadora.id}">${operadora.nome}</a></td>
 						</tr>
 					</c:forEach>
 				</table>
-				<a href="contato/cadastro.jsp" class="form-control btn btn-primary">Novo Contato</a>
+				<a href="operadora/cadastro.jsp" class="form-control btn btn-primary">Nova Operadora</a>
 				<input id="btnExcluir" type="submit"
-					class="form-control btn  btn-danger" style="display: none;" value="Excluir Contato">
-				<a href="controller.do?op=conopr" class="form-control btn btn-primary">Operadoras</a>
+					class="form-control btn  btn-danger" style="display: none;" value="Excluir">
+				<a href="controller.do?op=conctt" class="form-control btn btn-primary">Contatos</a>
 			</form>
 		</div>
 	</div>
