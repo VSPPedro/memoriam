@@ -40,13 +40,13 @@
 				<table>
 					<tr align="left">
 						<th></th>
-						<th>Nome</th>
+						<th>Nome da operadora</th>
 					</tr>
 					<c:forEach var="operadora" items="${operadoras}">
 						<tr align="left">
 							<td><input name="selecionarOperadora" value="${operadora.id}"
 								type="checkbox" onclick="showButton()" /></td>
-							<td><a href="controller.do?op=edtopp&id=${operadora.id}">${operadora.nome}</a></td>
+							<td><a href="controller.do?op=edtopr&id=${operadora.id}">${operadora.nome}</a></td>
 						</tr>
 					</c:forEach>
 				</table>

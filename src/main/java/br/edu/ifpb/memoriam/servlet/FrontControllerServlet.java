@@ -75,8 +75,6 @@ public class FrontControllerServlet extends HttpServlet {
 				request.setAttribute("operadora", operadora);
 				proxPagina = "operadora/cadastro.jsp";
 				break;
-				
-				//controller.do?op=edtopr&id=${contato.id}
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);
@@ -101,6 +99,7 @@ public class FrontControllerServlet extends HttpServlet {
 		}
 
 		ContatoController contatoCtrl = new ContatoController();
+		OperadoraController operadoraCtrl = new OperadoraController();
 		
 		Resultado resultado = null;
 		String paginaSucesso = "controller.do?op=conctt";
@@ -133,7 +132,19 @@ public class FrontControllerServlet extends HttpServlet {
 					proxPagina = paginaErro;
 				}
 				break;
-				
+			
+			case "cadopr":
+				resultado = operadoraCtrl.cadastrar(request.getParameterMap());
+				if (!resultado.isErro()) {
+					proxPagina = "controller.do?op=conopr";
+					request.setAttribute("msgs", resultado.getMensagensSucesso());
+				} else {
+					request.setAttribute("contato", (Contato) resultado.getEntidade());
+					request.setAttribute("msgs", resultado.getMensagensErro());
+					proxPagina = paginaErro;
+				}
+				break;
+
 			default:
 				request.setAttribute("erro", "Operação não especificada no servlet!");
 				proxPagina = "../erro/erro.jsp";
