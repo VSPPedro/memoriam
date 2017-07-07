@@ -69,10 +69,12 @@ public class OperadoraController {
 			dao.commit();
 
 			resultado.setErro(false);
-			resultado.setMensagensErro(Collections.singletonList("Contato(s) deletado(s) com sucesso!"));
+			Mensagem mensagem = new Mensagem("Operadora(s) deletado(s) com sucesso!", Categoria.INFO);
+			resultado.addMensagem(mensagem);
 		} else {
 			resultado.setErro(true);
-			resultado.setMensagensErro(Collections.singletonList("Nenhum contato foi selecionado!"));
+			Mensagem mensagem = new Mensagem("Nenhuma operadora foi selecionada!", Categoria.ERRO);
+			resultado.addMensagem(mensagem);
 		}
 
 		return resultado;
@@ -94,11 +96,13 @@ public class OperadoraController {
 
 			dao.commit();
 			resultado.setErro(false);
-			resultado.setMensagensErro(Collections.singletonList("Operadora criado com sucesso!"));
+			Mensagem mensagem = new Mensagem("Operadora(s) cadastrado(s) com sucesso!", Categoria.INFO);
+			resultado.addMensagem(mensagem);
 		} else {
 			resultado.setEntidade(this.operadora);
 			resultado.setErro(true);
-			resultado.setMensagensErro(this.mensagensErro);
+			Mensagem mensagem = new Mensagem("Nenhuma operadora foi cadastrada!", Categoria.ERRO);
+			resultado.addMensagem(mensagem);
 		}
 
 		return resultado;

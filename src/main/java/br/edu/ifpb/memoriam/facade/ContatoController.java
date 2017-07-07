@@ -3,7 +3,6 @@ package br.edu.ifpb.memoriam.facade;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -13,15 +12,22 @@ import br.edu.ifpb.memoriam.dao.OperadoraDAO;
 import br.edu.ifpb.memoriam.dao.PersistenceUtil;
 import br.edu.ifpb.memoriam.entity.Contato;
 import br.edu.ifpb.memoriam.entity.Operadora;
+import br.edu.ifpb.memoriam.entity.Usuario;
 
 public class ContatoController {
 
 	private Contato contato;
 	private List<String> mensagensErro;
-
+	
 	public List<Contato> consultar() {
 		ContatoDAO dao = new ContatoDAO();
 		List<Contato> contatos = dao.findAll();
+		return contatos;
+	}
+	
+	public List<Contato> consultar(Usuario usuario) {
+		ContatoDAO dao = new ContatoDAO();
+		List<Contato> contatos = dao.findAllFromUser(usuario);
 		return contatos;
 	}
 	
@@ -69,30 +75,25 @@ public class ContatoController {
 			dao.commit();
 			
 			resultado.setErro(false);
-			resultado.setMensagensErro(Collections.singletonList("Contato(s) deletado(s) com sucesso!"));
+			Mensagem mensagem = new Mensagem("Contato(s) deletado(s) com sucesso!", Categoria.INFO);
+			resultado.addMensagem(mensagem);
 		} else {
 			resultado.setErro(true);
-			resultado.setMensagensErro(Collections.singletonList("Nenhum contato foi selecionado!"));
+			Mensagem mensagem = new Mensagem("Nenhum contato foi selecionado!", Categoria.ERRO);
+			resultado.addMensagem(mensagem);
 		}
 		
 		return resultado;
 	}
 
-	public Resultado cadastrar(Map<String, String[]> parametros) {
+	public Resultado cadastrar(Map<String, String[]> parametros, Usuario usuario) {
 		Resultado resultado = new Resultado();
 		
-		if (isParametrosValidos(parametros)) {
+		boolean isParametrosEUsuarioValidos = (isParametrosValidos(parametros) && usuario != null);
+		
+		if (isParametrosEUsuarioValidos) {
 			// Recupera a operadora selecionada, a partir do seu id
-			Operadora operadora = null;
-			String idOperadora = parametros.get("operadora")[0];
-			System.out.println("ID da operadora: " + idOperadora);
-			
-			if (idOperadora != null) {
-				OperadoraDAO opDao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
-				operadora = opDao.find(Integer.parseInt(idOperadora));
-			}
-			System.out.println("Operadora selecionada: " + operadora.getNome());
-			contato.setOperadora(operadora);
+			contato.setUsuario(usuario);
 			
 			ContatoDAO dao = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());
 			dao.beginTransaction();
@@ -105,11 +106,13 @@ public class ContatoController {
 			
 			dao.commit();
 			resultado.setErro(false);
-			resultado.setMensagensErro(Collections.singletonList("Contato criado com sucesso"));
+			Mensagem mensagem = new Mensagem("Contato(s) cadastrado(s) com sucesso!", Categoria.INFO);
+			resultado.addMensagem(mensagem);
 		} else {
 			resultado.setEntidade(this.contato);
 			resultado.setErro(true);
-			resultado.setMensagensErro(this.mensagensErro);
+			Mensagem mensagem = new Mensagem("Nenhum contato foi cadastrado!", Categoria.ERRO);
+			resultado.addMensagem(mensagem);
 		}
 
 		return resultado;
@@ -122,7 +125,12 @@ public class ContatoController {
 		String[] nome = parametros.get("nome");
 		String[] fone = parametros.get("fone");
 		String[] dataAniv = parametros.get("dataaniv");
-
+		String idOperadora = parametros.get("operadora")[0];
+		
+		Operadora operadora = null;
+		
+		System.out.println("ID da operadora: " + idOperadora);
+		
 		this.contato = new Contato();
 		this.mensagensErro = new ArrayList<String>();
 
@@ -153,11 +161,22 @@ public class ContatoController {
 					contato.setDataAniversario(dataIni);
 				} catch (ParseException e) {
 					this.mensagensErro.add("Data inválida para a data de aniversário!");
+					System.out.println("Deu mera!");
 				}
 			} else {
 				this.mensagensErro.add("Formato inválido para a data de aniversário(use dd/mm/aaaa)!");
 			}
 		}
+		
+		if (idOperadora != null && idOperadora != "") {
+			OperadoraDAO opDao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
+			operadora = opDao.find(Integer.parseInt(idOperadora));
+			System.out.println("Operadora selecionada: " + operadora.getNome());
+			this.contato.setOperadora(operadora);
+		} else {
+			this.mensagensErro.add("Operadora é campo obrigatório!");
+		}
+		
 		return this.mensagensErro.isEmpty();
 	}
 }

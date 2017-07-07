@@ -16,6 +16,44 @@
 	src="${pageContext.request.contextPath}/javascript/memoriam.js"></script>
 </head>
 <body>
+
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div id="navbar">
+			
+				<c:if test="${perfil eq 'ADMIN'}">
+					<ul class="nav navbar-nav">
+						<li>
+							<a href="${pageContext.request.contextPath}/controller.do?op=conctt">Contatos</a>
+						</li>
+						<li>
+							<a href="${pageContext.request.contextPath}/controller.do?op=conoper">Operadoras</a>
+						</li>
+					</ul>
+				</c:if>
+				
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						 <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+						 	role="button" aria-haspopup="true" aria-expanded="false">
+						 		${sessionScope.usuario.nome}
+						 			<span class="caret"></span>
+			 			</a>
+						 <ul class="dropdown-menu">
+							<li>
+								<a href="#" id="link-submit">Sair</a>
+							</li>
+							<li role="separator"class="divider"></li>
+							<li>
+								<a href="#">${sessionScope.usuario.perfil}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
 	<div class="container">
 		<div class="jumbotron">
 			<h2>
@@ -57,5 +95,14 @@
 			</form>
 		</div>
 	</div>
+	
+	<c:set var="endofconversation" value="true" scope="request" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript">var form = document.getElementById("logout-form");
+		document.getElementById("link-submit").addEventListener("click", function() {
+			form.submit();
+		});
+	</script>
 </body>
 </html>

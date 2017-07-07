@@ -18,8 +18,10 @@ import br.edu.ifpb.memoriam.dao.ContatoDAO;
 import br.edu.ifpb.memoriam.dao.ManagedEMContext;
 import br.edu.ifpb.memoriam.dao.OperadoraDAO;
 import br.edu.ifpb.memoriam.dao.PersistenceUtil;
+import br.edu.ifpb.memoriam.dao.UsuarioDAO;
 import br.edu.ifpb.memoriam.entity.Contato;
 import br.edu.ifpb.memoriam.entity.Operadora;
+import br.edu.ifpb.memoriam.entity.Usuario;
 
 /**
  * @author fred
@@ -64,68 +66,94 @@ public class InsereOperadoras {
 			Operadora o2 = odao.find(2);
 			Operadora o3 = odao.find(3);
 			
+			UsuarioDAO udao = new UsuarioDAO(em);
+			Usuario u1 = udao.find(1); 
+			Usuario u2 = udao.find(2);
+			Usuario u3 = udao.find(3); 
+			
 			ContatoDAO dao = new ContatoDAO(em);
 			dao.beginTransaction();
+			
 			Contato a = new Contato();
 			a.setNome("Jose Carlos da Silva");
 			a.setFone("3422-9900");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o1);
+			a.setUsuario(u1);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Maria Clara dos Santos");
 			a.setFone("3662-5536");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o2);
+			a.setUsuario(u1);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Joao Firmino da Costa");
 			a.setFone("3556-8433");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o1);
+			a.setUsuario(u1);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Priscila Almeida Pontes");
 			a.setFone("3417-4237");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o3);
+			a.setUsuario(u2);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Walter Pontes Fontes");
 			a.setFone("3417-4645");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o2);
+			a.setUsuario(u2);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Amanda Correia Lima");
 			a.setFone("9888-4099");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o2);
+			a.setUsuario(u2);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Rogerio Nunes");
 			a.setFone("98388-4787");
 			a.setOperadora(o1);
 			a.setDataAniversario(new Date());
+			a.setUsuario(u3);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Carol Soares Barbosa");
 			a.setFone("98747-4849");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o3);
+			a.setUsuario(u3);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Cesar Ferreira da Silva");
 			a.setFone("98821-4899");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o1);
+			a.setUsuario(u3);
 			dao.insert(a);
+			
 			a = new Contato();
 			a.setNome("Natalia Seixas Gomes");
 			a.setFone("94432-0199");
 			a.setDataAniversario(new Date());
 			a.setOperadora(o2);
+			a.setUsuario(u3);
 			dao.insert(a);
+			
 			dao.commit();
 		} catch (Exception e) {
 			Assert.fail("Erro de BD: " + e);

@@ -6,8 +6,9 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 
 @Suite.SuiteClasses({
-	InsereContatos.class,
-	InsereOperadoras.class
+   InsereUsuarios.class,
+   InsereContatos.class,
+   InsereOperadoras.class
 })
 
 public class InsereDadosBanco {
