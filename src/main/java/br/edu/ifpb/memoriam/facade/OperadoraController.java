@@ -52,10 +52,7 @@ public class OperadoraController {
 	public Resultado deletar(Map<String, String[]> parametros) {
 
 		Resultado resultado = new Resultado();
-		String[] idsDasOperadorasSelecionadas = parametros.get("selecionarOperadora");
-		
-		
-		//System.out.println("Value idsDosContatosSelecionados: " + idsDosContatosSelecionados);
+		String[] idsDasOperadorasSelecionadas = parametros.get("delids");
 		
 		if (idsDasOperadorasSelecionadas.length > 0) {
 			OperadoraDAO dao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());

@@ -3,6 +3,7 @@
 
 <c:set var="perfil" value="${sessionScope.usuario.perfil}"/>
 <c:set var="nome" value="${sessionScope.usuario.nome}"/>
+
 <nav class="navbar navbar-default navbar-fixed-top">
 	<div class="container">
 		<div id="navbar">

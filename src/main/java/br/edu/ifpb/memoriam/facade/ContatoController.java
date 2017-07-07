@@ -61,7 +61,7 @@ public class ContatoController {
 	public Resultado deletar(Map<String, String[]> parametros){
 		
 		Resultado resultado = new Resultado();
-		String[] idsDosContatosSelecionados = parametros.get("selecionarContato");
+		String[] idsDosContatosSelecionados = parametros.get("delids");
 		
 		if (idsDosContatosSelecionados.length > 0) {
 			ContatoDAO dao = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());

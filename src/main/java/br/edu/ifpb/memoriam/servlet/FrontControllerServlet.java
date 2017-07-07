@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import br.edu.ifpb.memoriam.entity.Contato;
 import br.edu.ifpb.memoriam.entity.Operadora;
@@ -55,6 +56,8 @@ public class FrontControllerServlet extends HttpServlet {
 		// Pega o usuário logado
 		HttpSession session= request.getSession();
 		Usuario usuario= (Usuario) session.getAttribute("usuario");
+		
+		System.out.println("Operacao no doget: " + operacao);
 
 		switch (operacao) {
 		
@@ -70,7 +73,7 @@ public class FrontControllerServlet extends HttpServlet {
 				proxPagina = "contato/cadastro.jsp";
 				break;
 				
-			case "conopr":
+			case "conoper":
 				List<Operadora> operadoras = operadoraCtrl.consultar();
 				request.setAttribute("operadoras", operadoras);
 				proxPagina = "operadora/consulta.jsp";
@@ -93,7 +96,9 @@ public class FrontControllerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		
+		System.out.println("Teste DoPost!");
+		
 		this.getServletContext().removeAttribute("msgs");
 		String operacao = request.getParameter("op");
 
@@ -115,13 +120,21 @@ public class FrontControllerServlet extends HttpServlet {
 		
 		// Pega o usuário logado
 		HttpSession session= request.getSession();
-		Usuario usuario= (Usuario) session.getAttribute("usuario");
+		Usuario usuario = (Usuario) session.getAttribute("usuario");
+		
+		if (usuario != null){
+			System.out.println("Usuario: " + usuario.getNome());
+		} else {
+			System.out.println("Sessao do usuario ainda não foi efetuada!");
+		}
+		
+		System.out.println("Operacao no dopost: " + operacao);
 		
 		switch (operacao) {
 			// Login/logout
 			case "login":
 				paginaSucesso= "controller.do?op=conctt";
-				paginaErro= "controller.do?op=login";
+				paginaErro= "login/login.jsp";
 				resultado= loginCtrl.isValido(request.getParameterMap());
 				if(resultado.isErro()) {
 					request.setAttribute("msgs", resultado.getMensagens());
@@ -132,18 +145,17 @@ public class FrontControllerServlet extends HttpServlet {
 				}
 				break;
 			
-			case"logout":
+			case "logout":
 				proxPagina = "login/login.jsp";
 				session.invalidate();
 				if (resultado == null){
 					resultado = new Resultado();
 				}
-				
 				resultado.setErro(false);
-				
 				break;	
 			
 			case "cadctt":
+				System.out.println("Entrou aqui!");
 				resultado = contatoCtrl.cadastrar(request.getParameterMap(), usuario);
 				if (!resultado.isErro()) {
 					proxPagina = paginaSucesso;
@@ -155,7 +167,7 @@ public class FrontControllerServlet extends HttpServlet {
 				}
 				break;
 				
-			case "exlctt":
+			case "delctt":
 				resultado = contatoCtrl.deletar(request.getParameterMap());
 				paginaSucesso = "controller.do?op=conctt";
 				paginaErro = proxPagina;
@@ -172,7 +184,7 @@ public class FrontControllerServlet extends HttpServlet {
 			case "cadopr":
 				resultado = operadoraCtrl.cadastrar(request.getParameterMap());
 				if (!resultado.isErro()) {
-					proxPagina = "controller.do?op=conopr";
+					proxPagina = "controller.do?op=conoper";
 					request.setAttribute("msgs", resultado.getMensagens());
 				} else {
 					request.setAttribute("operadora", (Operadora) resultado.getEntidade());
@@ -181,9 +193,9 @@ public class FrontControllerServlet extends HttpServlet {
 				}
 				break;
 			
-			case "exlopr":
+			case "delopr":
 				resultado = operadoraCtrl.deletar(request.getParameterMap());
-				paginaSucesso = "controller.do?op=conopr";
+				paginaSucesso = "controller.do?op=conoper";
 				paginaErro = paginaSucesso;
 				if (!resultado.isErro()) {
 					proxPagina = paginaSucesso;

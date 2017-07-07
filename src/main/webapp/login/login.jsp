@@ -15,9 +15,14 @@
 				Memori<i class="glyphicon glyphicon-phone"></i>m
 			</h2>
 			<label for ="inputEmail" class="sr-only">Usuário</label> 
-			<input type="email" name="login" id="login" class="form-control" placeholder="Email" required autofocus>
+			<input type="email" name="login" id="login" value="${cookie['loginCookie'].value}" class="form-control" placeholder="Email" required autofocus>
 			<label for ="inputPassword"class="sr-only">Senha</label> 
-			<input type="password" id="senha" name="senha" class="form-control" placeholder="Senha" required> 
+			<input type="password" id="senha" name="senha" class="form-control" placeholder="Senha" required>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox"value="sim"id="lembrar"name="lembrar">Lembrar-me
+				</label>
+			</div> 
 			<button class ="btn btn-lg btn-primary btn-block"type="submit">
 				Entrar
 			</button>
