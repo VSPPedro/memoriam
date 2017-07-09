@@ -6,18 +6,20 @@ import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import br.edu.ifpb.memoriam.entity.Contato;
 import br.edu.ifpb.memoriam.entity.Operadora;
 import br.edu.ifpb.memoriam.entity.Usuario;
 import br.edu.ifpb.memoriam.facade.ContatoController;
+import br.edu.ifpb.memoriam.facade.LoginController;
 import br.edu.ifpb.memoriam.facade.OperadoraController;
 import br.edu.ifpb.memoriam.facade.Resultado;
+import br.edu.ifpb.memoriam.facade.UsuarioController;
 
 /**
  * Servlet implementation class FrontControllerServlet
@@ -43,6 +45,8 @@ public class FrontControllerServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		ContatoController contatoCtrl = new ContatoController();
 		OperadoraController operadoraCtrl = new OperadoraController();
+		UsuarioController usuarioCtrl = new UsuarioController();
+		
 		String proxPagina = null;
 		this.getServletContext().removeAttribute("msgs");
 		String operacao = request.getParameter("op");
@@ -84,6 +88,34 @@ public class FrontControllerServlet extends HttpServlet {
 				request.setAttribute("operadora", operadora);
 				proxPagina = "operadora/cadastro.jsp";
 				break;
+			
+			//busctt	
+			case "busctt":
+				List<Contato> contatosFiltrados = contatoCtrl.buscar(request.getParameterMap(), usuario);
+				request.setAttribute("contatos", contatosFiltrados);
+				proxPagina = "contato/consulta.jsp";
+				break;
+				
+			case "conuser":
+				List<Usuario> usuarios = usuarioCtrl.consultar();
+				request.setAttribute("usuarios", usuarios);
+				proxPagina = "usuario/consulta.jsp";
+				break;
+			
+			case "edtuser":
+				Usuario usuarioEdit = usuarioCtrl.buscar(request.getParameterMap());
+				request.setAttribute("usuarioEdit", usuarioEdit);
+				proxPagina = "usuario/cadastro.jsp";
+				break;
+			
+				
+			case "login":
+				proxPagina= "login/login.jsp";
+				break;
+				
+			default:
+				request.setAttribute("erro", "Operação não especificada no servlet!");
+				proxPagina = "../erro/erro.jsp";
 		}
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);
@@ -112,6 +144,7 @@ public class FrontControllerServlet extends HttpServlet {
 		ContatoController contatoCtrl = new ContatoController();
 		OperadoraController operadoraCtrl = new OperadoraController();
 		LoginController loginCtrl= new LoginController();
+		UsuarioController usuarioCtrl = new UsuarioController();
 		
 		Resultado resultado = null;
 		String paginaSucesso = "controller.do?op=conctt";
@@ -125,7 +158,7 @@ public class FrontControllerServlet extends HttpServlet {
 		if (usuario != null){
 			System.out.println("Usuario: " + usuario.getNome());
 		} else {
-			System.out.println("Sessao do usuario ainda não foi efetuada!");
+			System.out.println("Sessao do usuario vai ser iniciada!");
 		}
 		
 		System.out.println("Operacao no dopost: " + operacao);
@@ -136,12 +169,29 @@ public class FrontControllerServlet extends HttpServlet {
 				paginaSucesso= "controller.do?op=conctt";
 				paginaErro= "login/login.jsp";
 				resultado= loginCtrl.isValido(request.getParameterMap());
+				System.out.println(resultado.getMensagens());
 				if(resultado.isErro()) {
 					request.setAttribute("msgs", resultado.getMensagens());
 					proxPagina= paginaErro;
 				} else {
 					session.setAttribute("usuario", (Usuario) resultado.getEntidade());
 					proxPagina= paginaSucesso;
+					// trata o lembrar
+					String lembrar= request.getParameter("lembrar");
+					
+					if(lembrar!= null) {
+						usuario = (Usuario) session.getAttribute("usuario");
+						Cookie c= new Cookie("loginCookie", usuario.getEmail());
+						c.setMaxAge(-1);response.addCookie(c);
+					} else {
+						for(Cookie cookie: request.getCookies()) {
+							if(cookie.getName().equals("loginCookie")) {
+								cookie.setValue(null);
+								cookie.setMaxAge(0);
+								response.addCookie(cookie);
+							}
+						}
+					}
 				}
 				break;
 			
@@ -153,7 +203,7 @@ public class FrontControllerServlet extends HttpServlet {
 				}
 				resultado.setErro(false);
 				break;	
-			
+							
 			case "cadctt":
 				System.out.println("Entrou aqui!");
 				resultado = contatoCtrl.cadastrar(request.getParameterMap(), usuario);
@@ -204,6 +254,19 @@ public class FrontControllerServlet extends HttpServlet {
 				} else {
 					request.setAttribute("msgs", resultado.getMensagens());
 					proxPagina = paginaErro;
+				}
+				break;
+			
+			case "caduser":
+				
+				resultado = usuarioCtrl.cadastrar(request.getParameterMap());
+				if (!resultado.isErro()) {
+					proxPagina = "controller.do?op=conoper";
+					request.setAttribute("msgs", resultado.getMensagens());
+				} else {
+					request.setAttribute("usuarioEdit", (Usuario) resultado.getEntidade());
+					request.setAttribute("msgs", resultado.getMensagens());
+					proxPagina = "usuario/cadastro.jsp";;
 				}
 				break;
 

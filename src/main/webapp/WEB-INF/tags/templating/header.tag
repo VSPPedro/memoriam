@@ -15,6 +15,9 @@
 					<li>
 						<a href="${pageContext.request.contextPath}/controller.do?op=conoper">Operadoras</a>
 					</li>
+					<li>
+						<a href="${pageContext.request.contextPath}/controller.do?op=conuser">Usuarios</a>
+					</li>
 				</ul>
 			</c:if>
 			<ul class="nav navbar-nav navbar-right">

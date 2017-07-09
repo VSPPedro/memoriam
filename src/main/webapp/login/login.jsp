@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="mm" tagdir="/WEB-INF/tags/messages"%>
 <html>
 <head>
 	<title>Memoriam</title>
@@ -14,6 +15,9 @@
 			<h2 class="form-signin-heading">
 				Memori<i class="glyphicon glyphicon-phone"></i>m
 			</h2>
+			<!--Mensagens de erro do formulario -->
+			<mm:messages value="${msgs}" erroStyle="color:red" infoStyle="color:blue"/>
+			
 			<label for ="inputEmail" class="sr-only">Usuário</label> 
 			<input type="email" name="login" id="login" value="${cookie['loginCookie'].value}" class="form-control" placeholder="Email" required autofocus>
 			<label for ="inputPassword"class="sr-only">Senha</label> 

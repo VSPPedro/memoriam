@@ -100,6 +100,9 @@ public class OperadoraController {
 			resultado.setErro(true);
 			Mensagem mensagem = new Mensagem("Nenhuma operadora foi cadastrada!", Categoria.ERRO);
 			resultado.addMensagem(mensagem);
+			for (String mensagemErro : mensagensErro) {
+				resultado.addMensagem(new Mensagem(mensagemErro,Categoria.ERRO));
+			}
 		}
 
 		return resultado;

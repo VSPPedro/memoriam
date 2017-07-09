@@ -23,4 +23,10 @@ public class ContatoDAO extends GenericDAO<Contato, Integer> {
 		q.setParameter("user", usuario);
 		return q.getResultList();
 	}
+
+	public List<Contato> findUserWith(Usuario usuario, String busca) {
+		Query q= this.getEntityManager().createQuery("from Contato c where c.usuario = :user and c.nome like '%" + busca + "%'");
+		q.setParameter("user", usuario);
+		return q.getResultList();
+	}
 }

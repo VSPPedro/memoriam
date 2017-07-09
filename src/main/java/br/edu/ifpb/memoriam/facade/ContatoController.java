@@ -113,6 +113,10 @@ public class ContatoController {
 			resultado.setErro(true);
 			Mensagem mensagem = new Mensagem("Nenhum contato foi cadastrado!", Categoria.ERRO);
 			resultado.addMensagem(mensagem);
+			
+			for (String mensagemErro : mensagensErro) {
+				resultado.addMensagem(new Mensagem(mensagemErro,Categoria.ERRO));
+			}
 		}
 
 		return resultado;
@@ -161,7 +165,6 @@ public class ContatoController {
 					contato.setDataAniversario(dataIni);
 				} catch (ParseException e) {
 					this.mensagensErro.add("Data inválida para a data de aniversário!");
-					System.out.println("Deu mera!");
 				}
 			} else {
 				this.mensagensErro.add("Formato inválido para a data de aniversário(use dd/mm/aaaa)!");
@@ -178,5 +181,16 @@ public class ContatoController {
 		}
 		
 		return this.mensagensErro.isEmpty();
+	}
+
+	public List<Contato> buscar(Map<String, String[]> parameterMap, Usuario usuario) {
+		System.out.println("Entrou em buscar!");
+		System.out.println("buscarUsuario value: " + parameterMap.get("busca"));
+		
+		String[] busca = parameterMap.get("busca");
+		
+		ContatoDAO dao = new ContatoDAO();
+		List<Contato> contatosFiltrados = dao.findUserWith(usuario, busca[0]);
+		return contatosFiltrados;
 	}
 }

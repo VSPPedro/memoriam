@@ -1,12 +1,9 @@
-package br.edu.ifpb.memoriam.servlet;
+package br.edu.ifpb.memoriam.facade;
 
 import java.util.Map;
 
 import br.edu.ifpb.memoriam.dao.UsuarioDAO;
 import br.edu.ifpb.memoriam.entity.Usuario;
-import br.edu.ifpb.memoriam.facade.Categoria;
-import br.edu.ifpb.memoriam.facade.Mensagem;
-import br.edu.ifpb.memoriam.facade.Resultado;
 import br.edu.ifpb.memoriam.util.PasswordUtil;
 
 public class LoginController {
@@ -23,11 +20,14 @@ public class LoginController {
 			if(user.getSenha().equals(PasswordUtil.encryptMD5(passwd))) {
 				r.setEntidade(user);
 			} else {
+				System.out.println("Qual é...");
 				r.setErro(true);
 				r.addMensagem(new Mensagem("Usuário ou senha inválido(a).", Categoria.ERRO));
 			}
 		} else {
-			r.setErro(true);r.addMensagem(new Mensagem("Usuário ou senha inválido(a).",Categoria.ERRO));
+			System.out.println("Qual é... 2");
+			r.setErro(true);
+			r.addMensagem(new Mensagem("Usuário ou senha inválido(a).",Categoria.ERRO));
 		}
 		return r;
 	}

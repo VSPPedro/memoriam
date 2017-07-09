@@ -18,6 +18,15 @@
 				document.getElementById(box).style.display = vis;
 			}
 		</script>
+		<script>
+			function searchUsers (e, textarea){
+				var code = (e.keyCode ? e.keyCode : e.which);
+				if(code == 13) { //Enter keycode
+					document['form-consulta'].action = "controller.do?op=busctt";
+					window.location.href = "controller.do?op=busctt&busca=" + document.getElementById('buscarUsuario').value;
+				}
+			}
+		</script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 		<script src="${pageContext.request.contextPath}/bootstrap/js/bootstrap.min.js"></script>
 	</jsp:attribute>
@@ -26,9 +35,12 @@
 		<div class="container">
 			<div class="jumbotron">
 				<h2>Memori<i class="glyphicon glyphicon-phone"></i>m</h2>
-				<!--Mensagens de erro do formulario -->
-				<mm:messages value="${msgs}" erroStyle="color:red" infoStyle="color:blue"/>
-				<form action="controller.do?op=delctt" method="POST">
+				<form action="controller.do?op=delctt" method="POST" name="form-consulta">
+					<input type="text" onKeyPress="searchUsers(event, this)" name="buscarUsuario" id="buscarUsuario" value="${busca}" class="form-control" placeholder="Buscar usuario" >
+					
+					<!--Mensagens de erro do formulario -->
+					<mm:messages value="${msgs}" erroStyle="color:red" infoStyle="color:blue"/>
+					
 					<table class="table">
 						<tr align="left">
 							<th></th>
