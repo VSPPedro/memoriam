@@ -1,12 +1,15 @@
 package br.edu.ifpb.memoriam.facade;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import br.edu.ifpb.memoriam.bean.UtilBean;
+import br.edu.ifpb.memoriam.dao.ContatoDAO;
 import br.edu.ifpb.memoriam.dao.PersistenceUtil;
 import br.edu.ifpb.memoriam.dao.UsuarioDAO;
+import br.edu.ifpb.memoriam.entity.Contato;
+import br.edu.ifpb.memoriam.entity.Perfil;
 import br.edu.ifpb.memoriam.entity.Usuario;
 import br.edu.ifpb.memoriam.util.PasswordUtil;
 
@@ -78,7 +81,11 @@ public class UsuarioController {
 		this.usuario = new Usuario();
 		this.mensagensErro = new  ArrayList<String>();
 		
-		if (id != null && id.length > 0 && !id[0].isEmpty()) {
+		boolean isOldUser = (id != null && id.length > 0 && !id[0].isEmpty());
+		
+		if (isOldUser) {
+			//O usuario é um usuario ja inserido no banco
+			//O admin quer editar tal usuario
 			this.usuario.setId(Integer.parseInt(id[0]));
 		}
 		
@@ -91,16 +98,18 @@ public class UsuarioController {
 		if (email == null || email.length == 0 || email[0].isEmpty()) {
 			this.mensagensErro.add("Email é campo obrigatório!");
 		} else {
-			if (email[0].matches("[A-Za-z0-9\\._-]+@[A-Za-z]+\\.[A-Za-z]+")) {
+			if (email[0].matches("[A-Za-z0-9\\._-]+@[A-Za-z0-9]+(\\.[A-Za-z]+)*")) {
 				this.usuario.setEmail(email[0]);
 			} else {
 				this.mensagensErro.add("Formato inválido para o email(exemplo@exemplo.exemplo)!");
 			}
 		}
 		
-		if (senha != null && senha.length != 0 && !senha[0].isEmpty()) {
-			//O admin quer mudar a senha
-			
+		boolean isPassword = (senha != null && senha.length != 0 && !senha[0].isEmpty());
+		
+		if (isPassword && isOldUser) {
+			//O admin deseja mudar a senha de um usuario antigo
+			//Mudar a senha é opcional no caso de usuario antigo
 			boolean isEquals = senha[0].equals(senhaConf[0]);
 			
 			if (isEquals){
@@ -108,70 +117,122 @@ public class UsuarioController {
 			} else {
 				this.mensagensErro.add("Senhas não conferem!");
 			}
-		} 
-		
-		return false;
-	}
-	/*
-	 private boolean isParametrosValidos(Map<String, String[]> parametros) {
-		// nomes dos parâmetros vêm dos atributos 'name' das tags HTML do
-		// formulário
-		String[] id = parametros.get("id");
-		String[] nome = parametros.get("nome");
-		String[] fone = parametros.get("fone");
-		String[] dataAniv = parametros.get("dataaniv");
-		String idOperadora = parametros.get("operadora")[0];
-		
-		Operadora operadora = null;
-		
-		System.out.println("ID da operadora: " + idOperadora);
-		
-		this.contato = new Contato();
-		this.mensagensErro = new ArrayList<String>();
-
-		if (id != null && id.length > 0 && !id[0].isEmpty()) {
-			contato.setId(Integer.parseInt(id[0]));
-		}
-
-		if (nome == null || nome.length == 0 || nome[0].isEmpty()) {
-			this.mensagensErro.add("Nome é campo obrigatório!");
-		} else {
-			contato.setNome(nome[0]);
-		}
-
-		if (fone == null || fone.length == 0 || fone[0].isEmpty()) {
-			this.mensagensErro.add("Fone é campo obrigatório!");
-		} else {
-			contato.setFone(fone[0]);
-		}
-
-		if (dataAniv == null || dataAniv.length == 0 || dataAniv[0].isEmpty()) {
-			this.mensagensErro.add("Data de aniversário é campo obrigatório!");
-		} else {
-			if (dataAniv[0].matches("(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/(19|20)\\d{2,2}")) {
-				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-					sdf.setLenient(false);
-					Date dataIni = sdf.parse(dataAniv[0]);
-					contato.setDataAniversario(dataIni);
-				} catch (ParseException e) {
-					this.mensagensErro.add("Data inválida para a data de aniversário!");
-					System.out.println("Deu mera!");
+			
+		} else if (!isOldUser){
+			//Novo usario
+			if (isPassword) {
+				
+				boolean isEquals = senha[0].equals(senhaConf[0]);
+				
+				if (isEquals){
+					this.usuario.setSenha(PasswordUtil.encryptMD5(senha[0]));
+				} else {
+					this.mensagensErro.add("Senhas não conferem!");
 				}
+				
 			} else {
-				this.mensagensErro.add("Formato inválido para a data de aniversário(use dd/mm/aaaa)!");
+				this.mensagensErro.add("Campo senha e campo nova Senha são obrigatorios, pois se trata de um usuário novo!");
+			}
+		} else if (isOldUser) {
+			//Recuperar senha antiga do usuario e inserir
+			//O usuario é antigo e o admin não quer mudar a senha
+			Usuario usuarioEdit = buscar(id[0]);
+			this.usuario.setSenha(usuarioEdit.getSenha());
+		}
+		
+		if (perfil == null || perfil.length == 0 || perfil[0].isEmpty()) {
+			this.mensagensErro.add("Perfil é campo obrigatório!");
+		} else {
+			UtilBean utilBean = new UtilBean();
+			Perfil[] perfis = utilBean.getPerfisEnum();
+			
+			for (Perfil perfilArray : perfis) {
+				//Remover acentos
+				//String normalizada = Normalizer.normalize(perfil[0], Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+				//System.out.println("Perfil inserido normalizado: " + normalizada);
+				
+				System.out.println("Perfil inserido: " + perfil[0]);
+				System.out.println("Perfil comparado: " + perfilArray.getNome());
+				
+				if (perfil[0].equals(perfilArray.getNome())){
+					this.usuario.setPerfil(perfilArray);
+				}
+			}
+			
+			//Problemas com enconde no mommento de 'parametros.get'
+			if (perfil[0].equals("BÃ¡sico")) {
+				this.usuario.setPerfil(Perfil.BASIC);
+			}
+			
+			//Validar
+			if (this.usuario.getPerfil() == null) {
+				System.out.println("Caiu aqui!");
+				this.mensagensErro.add("Perfil é campo obrigatório!");
 			}
 		}
 		
-		if (idOperadora != null && idOperadora != "") {
-			OperadoraDAO opDao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
-			operadora = opDao.find(Integer.parseInt(idOperadora));
-			System.out.println("Operadora selecionada: " + operadora.getNome());
-			this.contato.setOperadora(operadora);
-		} else {
-			this.mensagensErro.add("Operadora é campo obrigatório!");
-		}
+		this.usuario.setAtivo(true);
 		
 		return this.mensagensErro.isEmpty();
-	}*/
+	}
+
+	public Resultado deletar(Map<String, String[]> parameterMap) {
+		Resultado resultado = new Resultado();
+		String[] idsDosUsuariosSelecionados = parameterMap.get("delids");
+		
+		if (idsDosUsuariosSelecionados.length > 0) {
+			UsuarioDAO dao = new UsuarioDAO(PersistenceUtil.getCurrentEntityManager());
+			
+			for (String id : idsDosUsuariosSelecionados) {
+				
+				System.out.println("Id: " + id);
+				
+				Usuario usuario = buscar(id);
+				
+				System.out.println("Usuario name: " + usuario.getNome());
+				
+				//Deletando contatos do usuario. Tive problemas com CascadeAll
+				/*
+				ContatoDAO daoContato = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());
+				List<Contato> contatos = daoContato.findAllFromUser(usuario);
+				
+				daoContato.beginTransaction();
+				for (Contato contato : contatos) {
+					System.out.println("Contato name: " + contato.getNome());
+					daoContato.delete(contato);
+				}
+				daoContato.commit();
+				*/
+				
+				//Agora pode deletar usuario
+				dao.delete(usuario);
+				
+			}
+			
+			dao.commit();
+			
+			resultado.setErro(false);
+			Mensagem mensagem = new Mensagem("Contato(s) deletado(s) com sucesso!", Categoria.INFO);
+			resultado.addMensagem(mensagem);
+		} else {
+			resultado.setErro(true);
+			Mensagem mensagem = new Mensagem("Nenhum contato foi selecionado!", Categoria.ERRO);
+			resultado.addMensagem(mensagem);
+		}
+		
+		return resultado;
+	}
+	
+	public Usuario buscar(String id){
+		List<Usuario> usuarios = consultar();
+		
+		for (Usuario usuario : usuarios) {
+			if (usuario.getId().toString().equals(id)){
+				return usuario;
+			}
+		}
+		
+		System.out.println("Contato não encontrado!");
+		return null;
+	}
 }

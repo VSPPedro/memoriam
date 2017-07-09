@@ -24,4 +24,10 @@ public class UtilBean {
 		
 		return perfils;
 	}
+	
+	public Perfil[] getPerfisEnum(){
+		Perfil[] perfils = Perfil.values();
+		
+		return perfils;
+	}
 }

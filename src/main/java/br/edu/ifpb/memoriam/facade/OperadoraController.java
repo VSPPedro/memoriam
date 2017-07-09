@@ -50,30 +50,46 @@ public class OperadoraController {
 	}
 	
 	public Resultado deletar(Map<String, String[]> parametros) {
-
+		System.out.println("Iniciar metodo deletar!");
 		Resultado resultado = new Resultado();
 		String[] idsDasOperadorasSelecionadas = parametros.get("delids");
 		
 		if (idsDasOperadorasSelecionadas.length > 0) {
 			OperadoraDAO dao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
 			dao.beginTransaction();
-
+			
+			resultado.setErro(false);
+			
 			for (String id : idsDasOperadorasSelecionadas) {
 				Operadora contato = buscar(id);
-				dao.delete(contato);
+				
+				try {
+					System.out.println("Deletar operadora!");
+					dao.delete(contato);
+					dao.commit();
+				} catch (Exception e) {
+					System.out.println("Não é possivel deletar a operadora!");
+					resultado.setErro(true);
+					Mensagem mensagem = new Mensagem("Não é possivel deletar operadora, pois está em uso!", Categoria.ERRO);
+					resultado.addMensagem(mensagem);
+				}
+				
 			}
-
-			dao.commit();
-
-			resultado.setErro(false);
-			Mensagem mensagem = new Mensagem("Operadora(s) deletado(s) com sucesso!", Categoria.INFO);
-			resultado.addMensagem(mensagem);
+			
+			System.out.println("Deu erro? " + resultado.isErro());
+			
+			if (!resultado.isErro()) {
+				Mensagem mensagem = new Mensagem("Operadora(s) deletado(s) com sucesso!", Categoria.INFO);
+				resultado.addMensagem(mensagem);
+			}
+			
 		} else {
 			resultado.setErro(true);
 			Mensagem mensagem = new Mensagem("Nenhuma operadora foi selecionada!", Categoria.ERRO);
 			resultado.addMensagem(mensagem);
 		}
-
+		
+		System.out.println("Resultado isErro: " + resultado.isErro());
 		return resultado;
 	}
 

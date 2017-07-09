@@ -117,7 +117,12 @@ public class FrontControllerServlet extends HttpServlet {
 				request.setAttribute("erro", "Operação não especificada no servlet!");
 				proxPagina = "../erro/erro.jsp";
 		}
-
+		
+		//Caso nenhum usuario tenha efetuado login
+		if (usuario == null) {
+			proxPagina = "login/login.jsp";
+		}
+		
 		RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);
 		dispatcher.forward(request, response);
 	}
@@ -244,6 +249,7 @@ public class FrontControllerServlet extends HttpServlet {
 				break;
 			
 			case "delopr":
+				System.out.println("Deletar operadora!");
 				resultado = operadoraCtrl.deletar(request.getParameterMap());
 				paginaSucesso = "controller.do?op=conoper";
 				paginaErro = paginaSucesso;
@@ -257,25 +263,49 @@ public class FrontControllerServlet extends HttpServlet {
 				}
 				break;
 			
-			case "caduser":
+			case "conoper":
+				List<Operadora> operadoras = operadoraCtrl.consultar();
+				request.setAttribute("operadoras", operadoras);
+				proxPagina = "operadora/consulta.jsp";
+				resultado = (Resultado) request.getAttribute("resultado");
+				break;	
 				
+			case "caduser":				
 				resultado = usuarioCtrl.cadastrar(request.getParameterMap());
 				if (!resultado.isErro()) {
-					proxPagina = "controller.do?op=conoper";
+					proxPagina = "controller.do?op=conuser";
 					request.setAttribute("msgs", resultado.getMensagens());
 				} else {
 					request.setAttribute("usuarioEdit", (Usuario) resultado.getEntidade());
 					request.setAttribute("msgs", resultado.getMensagens());
-					proxPagina = "usuario/cadastro.jsp";;
+					proxPagina = "usuario/cadastro.jsp";
 				}
 				break;
-
+			
+			//deluser	
+			case "deluser":				
+				resultado = usuarioCtrl.deletar(request.getParameterMap());
+				paginaSucesso = "controller.do?op=conuser";
+				paginaErro = paginaSucesso;
+				if (!resultado.isErro()) {
+					proxPagina = "controller.do?op=conuser";
+					request.setAttribute("msgs", resultado.getMensagens());
+				} else {
+					request.setAttribute("usuarioEdit", (Usuario) resultado.getEntidade());
+					request.setAttribute("msgs", resultado.getMensagens());
+					proxPagina = paginaErro;
+				}
+				break;
+				
 			default:
 				request.setAttribute("erro", "Operação não especificada no servlet!");
 				proxPagina = "../erro/erro.jsp";
 		}
 		
+		System.out.println("Resultado:  " + resultado);
+		System.out.println("Existe erro no FrontController? " + resultado.isErro());
 		if (resultado.isErro()) {
+			request.setAttribute("resultado", resultado);
 			RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);
 			dispatcher.forward(request, response);
 		} else {

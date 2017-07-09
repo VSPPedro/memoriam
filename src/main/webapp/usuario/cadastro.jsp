@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
+
 <tt:template title="Cadastrar usuario">
 	<jsp:body>
 		<div class="container">
@@ -24,14 +25,14 @@
 						class="form-control" placeholder="Email" />
 					<input id="senha"  name="senha"
 						type="password" class="form-control"
-						placeholder="Nova Senha(Opcional)" />
+						placeholder="Nova Senha(Opcional caso usuário já exista)" />
 					<input id="senhaConf" name="senhaConf"
 						type="password" class="form-control"
-						placeholder="Confirmar Nova Senha(Opcional)" />
+						placeholder="Confirmar Nova Senha(Opcional caso usuário já exista)" />
 						
 					<select class="form-control" id="perfil" name="perfil">
 						<option value="${null}" label="Selecione o perfil da conta:"> 
-							Selecione a operadora
+							Selecione o perfil da conta:
 						</option>
 						<c:forEach var="perfil" items="${utilBean.perfis}">
 								<c:if test="${perfil eq usuarioEdit.perfil.nome}">

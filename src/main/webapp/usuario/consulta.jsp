@@ -37,7 +37,7 @@
 						<c:forEach var="usuario" items="${usuarios}">
 							<tr align="left">
 								<td>
-									<input type="checkbox" name="delids" value="${usuario.id}" onclick="showDeleteIcon('div1')"/>
+									<input type="checkbox" id="delids" name="delids" value="${usuario.id}" onclick="showDeleteIcon('div1')"/>
 								</td>
 								<td>
 									<a href="controller.do?op=edtuser&id=${usuario.id}">${usuario.nome}</a>
@@ -49,7 +49,7 @@
 						<input type="submit" value="Excluir" class="form-control btn btn-danger" onclick="return confirm('Quer remover mesmo o(s) usuario(s)?');"/>
 					</div>
 				</form>
-				<a href="usario/cadastro.jsp" class="form-control btn btn-primary">Novo Usuario</a>
+				<a href="usuario/cadastro.jsp" class="form-control btn btn-primary">Novo Usuario</a>
 			</div>
 		</div>
 		<c:remove var="msgs" scope="application"/>

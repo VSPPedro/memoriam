@@ -38,8 +38,8 @@
 	</div>
 </nav>
 
-<form id="logout-form"action="${pageContext.request.contextPath}/controller.do"method="POST">
-	<input type="hidden"name="op"value="logout"/>
+<form id="logout-form" action="${pageContext.request.contextPath}/controller.do"method="POST">
+	<input type="hidden" name="op" value="logout"/>
 </form>
 
 <script type="text/javascript">

@@ -2,6 +2,7 @@ package br.edu.ifpb.memoriam.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,8 @@ public class Contato {
 	@OneToOne
 	private Operadora operadora;
 	
-	@OneToOne
+	//cascade=CascadeType.ALL
+	@OneToOne ()
 	@JoinColumn(name="ID_USUARIO")
 	private Usuario usuario;
 	
