@@ -38,14 +38,14 @@ public class InsereOperadoras {
 		PersistenceUtil.createEntityManagerFactory("memoriam");
 		emf = PersistenceUtil.getEntityManagerFactory();
 		ManagedEMContext.bind(emf, emf.createEntityManager());
-		System.out.println("init()");
+		System.out.println("init() - Insere Operadoras");
 	}
 
 	@AfterClass
 	public static void destroy() {
 		if (emf != null) {
 			emf.close();
-			System.out.println("destroy()");
+			System.out.println("destroy() - Insere Operadoras");
 		}
 	}
 
@@ -62,7 +62,6 @@ public class InsereOperadoras {
 		try {
 			OperadoraDAO odao = new OperadoraDAO(em);
 			Operadora o1 = odao.find(1);
-			System.out.println("Resultado da busca do odao: " + o1);
 			Operadora o2 = odao.find(2);
 			Operadora o3 = odao.find(3);
 			

@@ -20,12 +20,10 @@ public class LoginController {
 			if(user.getSenha().equals(PasswordUtil.encryptMD5(passwd))) {
 				r.setEntidade(user);
 			} else {
-				System.out.println("Qual é...");
 				r.setErro(true);
 				r.addMensagem(new Mensagem("Usuário ou senha inválido(a).", Categoria.ERRO));
 			}
 		} else {
-			System.out.println("Qual é... 2");
 			r.setErro(true);
 			r.addMensagem(new Mensagem("Usuário ou senha inválido(a).",Categoria.ERRO));
 		}

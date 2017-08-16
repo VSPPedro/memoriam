@@ -26,14 +26,14 @@ public class InsereUsuarios {
 		PersistenceUtil.createEntityManagerFactory("memoriam");
 		emf = PersistenceUtil.getEntityManagerFactory();
 		ManagedEMContext.bind(emf, emf.createEntityManager());
-		System.out.println("init()");
+		System.out.println("init() - InsereUsuarios");
 	}
 
 	@AfterClass
 	public static void destroy() {
 		if (emf != null) {
 			emf.close();
-			System.out.println("destroy()");
+			System.out.println("destroy() - InsereUsuarios");
 		}
 	}
 

@@ -40,7 +40,6 @@ public class ContatoController {
 			}
 		}
 		
-		System.out.println("Contato não encontrado!");
 		return null;
 	}
 
@@ -54,7 +53,6 @@ public class ContatoController {
 			}
 		}
 		
-		System.out.println("Contato não encontrado!");
 		return null;
 	}
 	
@@ -133,8 +131,6 @@ public class ContatoController {
 		
 		Operadora operadora = null;
 		
-		System.out.println("ID da operadora: " + idOperadora);
-		
 		this.contato = new Contato();
 		this.mensagensErro = new ArrayList<String>();
 
@@ -174,7 +170,6 @@ public class ContatoController {
 		if (idOperadora != null && idOperadora != "") {
 			OperadoraDAO opDao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
 			operadora = opDao.find(Integer.parseInt(idOperadora));
-			System.out.println("Operadora selecionada: " + operadora.getNome());
 			this.contato.setOperadora(operadora);
 		} else {
 			this.mensagensErro.add("Operadora é campo obrigatório!");
@@ -184,8 +179,6 @@ public class ContatoController {
 	}
 
 	public List<Contato> buscar(Map<String, String[]> parameterMap, Usuario usuario) {
-		System.out.println("Entrou em buscar!");
-		System.out.println("buscarUsuario value: " + parameterMap.get("busca"));
 		
 		String[] busca = parameterMap.get("busca");
 		

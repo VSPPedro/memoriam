@@ -60,8 +60,6 @@ public class FrontControllerServlet extends HttpServlet {
 		// Pega o usuário logado
 		HttpSession session= request.getSession();
 		Usuario usuario= (Usuario) session.getAttribute("usuario");
-		
-		System.out.println("Operacao no doget: " + operacao);
 
 		switch (operacao) {
 		
@@ -134,8 +132,6 @@ public class FrontControllerServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		System.out.println("Teste DoPost!");
-		
 		this.getServletContext().removeAttribute("msgs");
 		String operacao = request.getParameter("op");
 
@@ -160,21 +156,13 @@ public class FrontControllerServlet extends HttpServlet {
 		HttpSession session= request.getSession();
 		Usuario usuario = (Usuario) session.getAttribute("usuario");
 		
-		if (usuario != null){
-			System.out.println("Usuario: " + usuario.getNome());
-		} else {
-			System.out.println("Sessao do usuario vai ser iniciada!");
-		}
-		
-		System.out.println("Operacao no dopost: " + operacao);
-		
 		switch (operacao) {
 			// Login/logout
 			case "login":
 				paginaSucesso= "controller.do?op=conctt";
 				paginaErro= "login/login.jsp";
 				resultado= loginCtrl.isValido(request.getParameterMap());
-				System.out.println(resultado.getMensagens());
+				
 				if(resultado.isErro()) {
 					request.setAttribute("msgs", resultado.getMensagens());
 					proxPagina= paginaErro;
@@ -210,7 +198,6 @@ public class FrontControllerServlet extends HttpServlet {
 				break;	
 							
 			case "cadctt":
-				System.out.println("Entrou aqui!");
 				resultado = contatoCtrl.cadastrar(request.getParameterMap(), usuario);
 				if (!resultado.isErro()) {
 					proxPagina = paginaSucesso;
@@ -249,7 +236,6 @@ public class FrontControllerServlet extends HttpServlet {
 				break;
 			
 			case "delopr":
-				System.out.println("Deletar operadora!");
 				resultado = operadoraCtrl.deletar(request.getParameterMap());
 				paginaSucesso = "controller.do?op=conoper";
 				paginaErro = paginaSucesso;
@@ -302,8 +288,6 @@ public class FrontControllerServlet extends HttpServlet {
 				proxPagina = "../erro/erro.jsp";
 		}
 		
-		System.out.println("Resultado:  " + resultado);
-		System.out.println("Existe erro no FrontController? " + resultado.isErro());
 		if (resultado.isErro()) {
 			request.setAttribute("resultado", resultado);
 			RequestDispatcher dispatcher = request.getRequestDispatcher(proxPagina);

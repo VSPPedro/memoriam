@@ -32,7 +32,6 @@ public class OperadoraController {
 			}
 		}
 
-		System.out.println("Operadora não encontrada!");
 		return null;
 	}
 	
@@ -45,12 +44,10 @@ public class OperadoraController {
 			}
 		}
 		
-		System.out.println("Operadora não encontrada!");
 		return null;
 	}
 	
 	public Resultado deletar(Map<String, String[]> parametros) {
-		System.out.println("Iniciar metodo deletar!");
 		Resultado resultado = new Resultado();
 		String[] idsDasOperadorasSelecionadas = parametros.get("delids");
 		
@@ -64,19 +61,15 @@ public class OperadoraController {
 				Operadora contato = buscar(id);
 				
 				try {
-					System.out.println("Deletar operadora!");
 					dao.delete(contato);
 					dao.commit();
 				} catch (Exception e) {
-					System.out.println("Não é possivel deletar a operadora!");
 					resultado.setErro(true);
 					Mensagem mensagem = new Mensagem("Não é possivel deletar operadora, pois está em uso!", Categoria.ERRO);
 					resultado.addMensagem(mensagem);
 				}
 				
 			}
-			
-			System.out.println("Deu erro? " + resultado.isErro());
 			
 			if (!resultado.isErro()) {
 				Mensagem mensagem = new Mensagem("Operadora(s) deletado(s) com sucesso!", Categoria.INFO);
@@ -89,7 +82,6 @@ public class OperadoraController {
 			resultado.addMensagem(mensagem);
 		}
 		
-		System.out.println("Resultado isErro: " + resultado.isErro());
 		return resultado;
 	}
 
@@ -130,10 +122,6 @@ public class OperadoraController {
 		String[] id = parametros.get("id");
 		String[] nome = parametros.get("nome");
 		String[] prefixo = parametros.get("prefixo");
-
-		System.out.println("Valor id: " + id[0]);
-		System.out.println("Valor nome: " + nome[0]);
-		System.out.println("Valor prefixo: " + prefixo[0]);
 
 		this.operadora = new Operadora();
 		this.mensagensErro = new ArrayList<String>();

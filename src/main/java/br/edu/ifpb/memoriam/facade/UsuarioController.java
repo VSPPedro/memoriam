@@ -34,7 +34,6 @@ public class UsuarioController {
 			}
 		}
 		
-		System.out.println("Usuario não encontrado!");
 		return null;
 	}
 
@@ -147,12 +146,6 @@ public class UsuarioController {
 			Perfil[] perfis = utilBean.getPerfisEnum();
 			
 			for (Perfil perfilArray : perfis) {
-				//Remover acentos
-				//String normalizada = Normalizer.normalize(perfil[0], Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-				//System.out.println("Perfil inserido normalizado: " + normalizada);
-				
-				System.out.println("Perfil inserido: " + perfil[0]);
-				System.out.println("Perfil comparado: " + perfilArray.getNome());
 				
 				if (perfil[0].equals(perfilArray.getNome())){
 					this.usuario.setPerfil(perfilArray);
@@ -166,7 +159,6 @@ public class UsuarioController {
 			
 			//Validar
 			if (this.usuario.getPerfil() == null) {
-				System.out.println("Caiu aqui!");
 				this.mensagensErro.add("Perfil é campo obrigatório!");
 			}
 		}
@@ -181,35 +173,30 @@ public class UsuarioController {
 		String[] idsDosUsuariosSelecionados = parameterMap.get("delids");
 		
 		if (idsDosUsuariosSelecionados.length > 0) {
-			UsuarioDAO dao = new UsuarioDAO(PersistenceUtil.getCurrentEntityManager());
 			
 			for (String id : idsDosUsuariosSelecionados) {
 				
-				System.out.println("Id: " + id);
-				
 				Usuario usuario = buscar(id);
 				
-				System.out.println("Usuario name: " + usuario.getNome());
-				
-				//Deletando contatos do usuario. Tive problemas com CascadeAll
-				/*
 				ContatoDAO daoContato = new ContatoDAO(PersistenceUtil.getCurrentEntityManager());
 				List<Contato> contatos = daoContato.findAllFromUser(usuario);
 				
 				daoContato.beginTransaction();
+				
 				for (Contato contato : contatos) {
-					System.out.println("Contato name: " + contato.getNome());
 					daoContato.delete(contato);
 				}
+				
 				daoContato.commit();
-				*/
+				
+				UsuarioDAO dao = new UsuarioDAO(PersistenceUtil.getCurrentEntityManager());
+				dao.beginTransaction();
 				
 				//Agora pode deletar usuario
 				dao.delete(usuario);
+				dao.commit();
 				
 			}
-			
-			dao.commit();
 			
 			resultado.setErro(false);
 			Mensagem mensagem = new Mensagem("Contato(s) deletado(s) com sucesso!", Categoria.INFO);
@@ -232,7 +219,6 @@ public class UsuarioController {
 			}
 		}
 		
-		System.out.println("Contato não encontrado!");
 		return null;
 	}
 }

@@ -33,14 +33,14 @@ public class InsereContatos {
 		PersistenceUtil.createEntityManagerFactory("memoriam");
 		emf = PersistenceUtil.getEntityManagerFactory();
 		ManagedEMContext.bind(emf, emf.createEntityManager());
-		System.out.println("init()");
+		System.out.println("init() - Insere Contatos");
 	}
 
 	@AfterClass
 	public static void destroy() {
 		if (emf != null) {
 			emf.close();
-			System.out.println("destroy()");
+			System.out.println("destroy() - Insere Contatos");
 		}
 	}
 
