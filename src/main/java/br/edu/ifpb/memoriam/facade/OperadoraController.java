@@ -53,20 +53,21 @@ public class OperadoraController {
 		
 		if (idsDasOperadorasSelecionadas.length > 0) {
 			OperadoraDAO dao = new OperadoraDAO(PersistenceUtil.getCurrentEntityManager());
-			dao.beginTransaction();
 			
 			resultado.setErro(false);
 			
 			for (String id : idsDasOperadorasSelecionadas) {
-				Operadora contato = buscar(id);
+				Operadora operadora = buscar(id);
 				
 				try {
-					dao.delete(contato);
+					dao.beginTransaction();
+					dao.delete(operadora);
 					dao.commit();
 				} catch (Exception e) {
 					resultado.setErro(true);
 					Mensagem mensagem = new Mensagem("Não é possivel deletar operadora, pois está em uso!", Categoria.ERRO);
 					resultado.addMensagem(mensagem);
+					dao.rollback();
 				}
 				
 			}
