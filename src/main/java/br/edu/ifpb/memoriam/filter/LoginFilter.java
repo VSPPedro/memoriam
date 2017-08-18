@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import br.edu.ifpb.memoriam.entity.Usuario;
+
 @WebFilter(filterName = "LoginFilter", urlPatterns = { "/contato/*", "/operadora/*", "/usuario/*" })
 public class LoginFilter implements Filter {
 
@@ -23,7 +25,7 @@ public class LoginFilter implements Filter {
 		HttpSession httpSession = httpRequest.getSession(false);
 
 		if (httpSession != null) {
-			String loginUser = (String) httpSession.getAttribute("usuario");
+			Usuario loginUser = (Usuario) httpSession.getAttribute("usuario");
 			if (loginUser == null) {
 				redirectLogin(httpRequest, httpResponse);
 				return;
